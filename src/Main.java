@@ -55,11 +55,11 @@ public class Main {
     }
     private static void initRoutes(HttpServer server) {
 
-        server.createContext("/", Main::handleRequestX);
+        server.createContext("/", Main::handleRequest);
         server.createContext("/", Main::handleRequestX);
         server.createContext("/apps/",
 
-        Main::handleRequestX); }
+        Main::handleRequestY); }
 
     private static void handleRequest(HttpExchange exchange) {
         try {
@@ -111,6 +111,30 @@ public class Main {
                 URI uri = URI.create (exchange.getProtocol ());
                 String ctxPath = String.valueOf (exchange.getHttpContext()
                         .getAttributes ());
+                write(writer, "HTTP Метод", String.valueOf (method));
+                write(writer, "Запросccccc", uri.toString());
+                write(writer, "Обработан через", ctxPath);
+                writeHeaders(writer, "Заголовки запроса",
+                        exchange.getRequestHeaders());
+                writeData (writer, exchange);
+                writer.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static void handleRequestY(HttpExchange exchange) {
+        try {
+            exchange.getResponseHeaders()
+                    .add("Content-Type", "text/plain; charset=utf-8");
+            int responseCode = 300;
+            int length = 0;
+            exchange.sendResponseHeaders(responseCode, length);
+            try (PrintWriter writer = (PrintWriter) getWriterFrom(exchange)) {
+                String h = "kkkkkkkkkk";
+                InputStream method = exchange.getRequestBody ();
+                URI uri = URI.create ((String) exchange.getAttribute (h));
+                String ctxPath = String.valueOf (exchange.getPrincipal ());
                 write(writer, "HTTP Метод", String.valueOf (method));
                 write(writer, "Запросccccc", uri.toString());
                 write(writer, "Обработан через", ctxPath);
